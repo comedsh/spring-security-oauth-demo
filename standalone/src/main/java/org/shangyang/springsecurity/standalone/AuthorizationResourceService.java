@@ -50,6 +50,10 @@ public class AuthorizationResourceService {
         	
             http
             		.authorizeRequests()
+            		/**
+            		 * /oauth/authorize -> authorization code 授权模式的登录入口地址，通常是从 client 将 resource owner 重定向到 authorization server 进行验证的入口地址；
+            		 * /oauth/confirm_access -> authorization code 授权模式的确认页面，当 resource owner 输入自己的 credentials 以后，会跳转到该页面询问用户是否确认授权？confirm or deny；
+            		 */
             		.antMatchers("/", "/login", "/oauth/authorize", "/oauth/confirm_access").permitAll()
             		
             	.and()
