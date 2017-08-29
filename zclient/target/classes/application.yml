@@ -4,6 +4,7 @@ spring:
 security:
   user:
     password: password
+    roles: user
   oauth2:
     resource:
       filter-order: 3
