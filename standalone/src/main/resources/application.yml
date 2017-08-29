@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: standalone
+management:
+  context_path: /admin
+security:
+  user:
+    password: password
+  oauth2:
+    resource:
+      filter-order: 3
+server:
+  port: 9999
+  context-path: /uaa      
+logging:
+  level:
+    org.springframework.security: DEBUG

@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: client
+security:
+  user:
+    password: password
+  oauth2:
+    resource:
+      filter-order: 3
+server:
+  port: 8080
+  context-path: /client      
+logging:
+  level:
+    org.springframework.security: DEBUG
