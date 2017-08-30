@@ -105,6 +105,7 @@ public class AuthorizationResourceService {
 		            .scopes("read", "write", "trust")
 		            .resourceIds("oauth2-resource")
 		            .accessTokenValiditySeconds(600)
+		            .secret("password")
  		    .and()
 		        .withClient("c2")
 		            .authorizedGrantTypes("authorization_code")
@@ -135,7 +136,7 @@ public class AuthorizationResourceService {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) 
                 .and()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.POST, "/api/user/{id}").access("hasRole('CUSTOMER') and #oauth2.hasScope('read')");
+                .antMatchers(HttpMethod.POST, "/api/user/{id}").access("hasRole('USER') and #oauth2.hasScope('read')");
             		
         }
         
@@ -148,7 +149,7 @@ public class AuthorizationResourceService {
 	 * @return
 	 */
     @RequestMapping( value = "/api/user/{id}", method = RequestMethod.GET )
-    public ResponseEntity<User> getTransaction(@PathVariable("id") long id){
+    public ResponseEntity<User> getUser(@PathVariable("id") long id){
     	
     	User user = new User();
     	

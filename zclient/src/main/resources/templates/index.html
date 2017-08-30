@@ -9,11 +9,17 @@
 <script lang="javascript">
 	
 function redirect(){
-	document.location.href='http://localhost:9999/uaa/oauth/authorize?client_id=c1&redirect_uri=http%3a%2f%2flocalhost%3a8080%2fclient&response_type=code&scope=read';
+	
+	var state = document.getElementById("state").innerHTML;
+	
+	/*<![CDATA[*/
+	document.location.href='http://localhost:9999/uaa/oauth/authorize?client_id=c1&redirect_uri=http%3a%2f%2flocalhost%3a8080%2fclient%2faccess&response_type=code&scope=read&state='+state;
+	/*]]>*/
 }	
 	
 </script>
 
+<span id="state" th:text="${state}" />
 
 <body class="uk-height-1-1">
 	<div class="uk-vertical-align uk-text-center uk-height-1-1">
