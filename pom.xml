@@ -9,6 +9,7 @@
 		<module>standalone</module>
 		<module>distributed</module>
 		<module>zclient</module>
+		<module>commons-api</module>
 	</modules>
 
 	<properties>

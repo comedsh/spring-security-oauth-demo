@@ -3,6 +3,7 @@ package org.shangyang.springsecurity.client;
 import javax.servlet.http.HttpSession;
 
 import org.json.JSONObject;
+import org.shangyang.springsecurity.commons.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -11,8 +12,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -67,17 +71,35 @@ public class ClientApplication {
     		throw new RuntimeException("CSRF attack! the state token value is NOT equals；");
     	}
     	
-    	JSONObject parameters = new JSONObject();
+//      使用下面的 JSONObject 在解析参数的时候生死都要报错，RestClientException: Could not write request: no suitable HttpMessageConverter found for request type [org.json.JSONObject]
+//    	从错误信息中可以知道 JSONObject 不能被解析；所以退而求其次，使用 MultiValueMap 来替代了；
+//    	
+//    	JSONObject parameters = new JSONObject();
+//    	
+//    	parameters.put("grant_type", "authorization_code");
+//    	parameters.put("code", code);
+//    	
+//    	logger.debug("==========> " + parameters.toString());
     	
-    	parameters.put("grant_type", "authorization_code");
-    	parameters.put("code", code);
+    	MultiValueMap<String, String> parameters = new LinkedMultiValueMap<String, String>();
     	
-    	logger.debug("==========> " + parameters.toString());
+    	parameters.add("grant_type", "authorization_code");
+    	parameters.add("code", code);
+    	// 照理说，我获取 access_token 不需要 redirect_uri 参数，但是这里必须与获取 authorization_code 的 redirect_uri 保持一致，我想，是出于安全考虑吧；
+    	parameters.add("redirect_uri", "http://localhost:8080/client/access"); 
     	
     	// 通过 Authorization Code 获取 Access Token；
     	String accessToken = TokenUtils.postForAccessCode( parameters, "c1", "password", "http://localhost:9999/uaa/oauth/token" );
     	
     	logger.debug("==========> access token retrieved, " + accessToken);    	
+    	
+    	// 通过 Access Token 获取 Resource Server 上的被保护资源；
+    	
+    	User user = TokenUtils.getForProtectedResource( accessToken, User.class, "http://localhost:9999/uaa/api/user/1000" );
+    	
+    	logger.debug("=========> protected user retrieved: " + user.toString() );
+    	
+    	model.addAttribute("user", user);
     	
     	return "access";
     	

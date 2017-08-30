@@ -1,13 +1,3 @@
-spring:
-  application:
-    name: client
-security:
-  user:
-    password: password
-    roles: user
-  oauth2:
-    resource:
-      filter-order: 3
 server:
   port: 8080
   context-path: /client      

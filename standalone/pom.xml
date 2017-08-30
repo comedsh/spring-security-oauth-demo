@@ -34,7 +34,12 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
-		</dependency>		
+		</dependency>
+		<dependency>
+			<groupId>org.shangyang</groupId>
+			<artifactId>commons-api</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 
 	<build>
