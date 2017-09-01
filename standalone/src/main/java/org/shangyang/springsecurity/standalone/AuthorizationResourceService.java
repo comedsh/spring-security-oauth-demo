@@ -80,41 +80,10 @@ public class AuthorizationResourceService {
             
         }
     }
-    
-    /**
-     * 
-     * 注意，ResourceServerConfig 是对 API 的访问安全进行控制，既它的目的是对第三方 Client 的访问进行控制，所以，它只能通过 OAuth 的方式进行访问，也就是通过 Access Token；
-     * 
-     * 因为和 WebSecurity 一并使用，所以要使得对 Protected Resource 资源的访问的限制生效，必须设置 Order 的值，并且确保 ResourceServerConfig 所生成的 Filters 在 WebSecurityConfig 所生成的 Filters 之前执行； 
-     * 
-     * @author shangyang
-     *
-     */
-	@Configuration
-	@EnableResourceServer
-	@Order(-10)
-    static class ResourceServerConfig extends ResourceServerConfigurerAdapter{
-	
-        @Override
-        public void configure(HttpSecurity http) throws Exception {
-        	
-            http.antMatcher("/api/**") // the filter chain defined for restful
-                	.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) 
-                	
-                .and()
-	                .authorizeRequests()
-	                .antMatchers(HttpMethod.GET, "/api/user/{id}").access("hasRole('USER') and #oauth2.hasScope('read')")
-	            
-	            .and()
-	            	.authorizeRequests().anyRequest().permitAll();
-            		
-        }
-        
-	}    
-    
+
 	@Configuration
 	@EnableAuthorizationServer
-	protected static class AuthorizationConfig extends AuthorizationServerConfigurerAdapter {
+	protected static class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
 
 		@Autowired
 		private AuthenticationManager authenticationManager;
@@ -157,7 +126,38 @@ public class AuthorizationResourceService {
 		// @formatter:on
 		}
 
-	}
+	}    
+    
+    /**
+     * 
+     * 注意，ResourceServerConfig 是对 API 的访问安全进行控制，既它的目的是对第三方 Client 的访问进行控制，所以，它只能通过 OAuth 的方式进行访问，也就是通过 Access Token；
+     * 
+     * 因为和 WebSecurity 一并使用，所以要使得对 Protected Resource 资源的访问的限制生效，必须设置 Order 的值，并且确保 ResourceServerConfig 所生成的 Filters 在 WebSecurityConfig 所生成的 Filters 之前执行； 
+     * 
+     * @author shangyang
+     *
+     */
+	@Configuration
+	@EnableResourceServer
+	@Order(-10)
+    static class ResourceServerConfig extends ResourceServerConfigurerAdapter{
+	
+        @Override
+        public void configure(HttpSecurity http) throws Exception {
+        	
+            http.antMatcher("/api/**") // the filter chain defined for restful
+                	.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) 
+                	
+                .and()
+	                .authorizeRequests()
+	                .antMatchers(HttpMethod.GET, "/api/user/{id}").access("hasRole('USER') and #oauth2.hasScope('read')")
+	            
+	            .and()
+	            	.authorizeRequests().anyRequest().permitAll();
+            		
+        }
+        
+	}    
 	
 	/**
 	 * 该资源是被保护的 Resource 资源；只有拿到 Access Token 以后，才能获取；
