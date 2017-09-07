@@ -14,6 +14,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
@@ -80,22 +81,37 @@ public class AuthorizationResourceService {
             
         }
     }
-
-	@Configuration
+    
+    /**
+     * 如果不知道怎么配置，可以参考 @see OAuth2AuthorizationServerConfiguration
+     * 
+     * @author shangyang
+     *
+     */
+    @Configuration
 	@EnableAuthorizationServer
 	protected static class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
 
 		@Autowired
 		private AuthenticationManager authenticationManager;
-
+		
+		private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+		
+		/**
+		 * 提供入口对 AuthorizationServerEndpointsConfigurer 进行配置
+		 */
 		@Override
 		public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
 			endpoints.authenticationManager(authenticationManager);
 		}
 		
 		@Override
-		public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
-			security.checkTokenAccess("isAuthenticated()");
+		public void configure(AuthorizationServerSecurityConfigurer configurer) throws Exception {
+
+			configurer.passwordEncoder( passwordEncoder );
+			
+			configurer.checkTokenAccess("isAuthenticated()");
+			
 		}
 
 		@Override
@@ -108,7 +124,8 @@ public class AuthorizationResourceService {
 		            .scopes("read", "write", "trust")
 		            .resourceIds("oauth2-resource")
 		            .accessTokenValiditySeconds(600)
-		            .secret("password")
+		            //.secret("password")
+		            .secret("$2a$10$y4Jq0RDOQbCXlqkirWEt4.FhPiKSqzRSjn5t6WJtiArjVBwgdzqja")
  		    .and()
 		        .withClient("c2")
 		            .authorizedGrantTypes("authorization_code")
@@ -122,7 +139,8 @@ public class AuthorizationResourceService {
 		            .authorities("ROLE_CLIENT")
 		            .scopes("read")
 		            .resourceIds("oauth2-resource")
-		            .secret("secret");
+		            //.secret("secret");
+		            .secret("$2a$10$xWQWJLr5t/l6SB1VwK91DOSFFYNppgnDNfTmCeIuTusry4O8Zhn0m");
 		// @formatter:on
 		}
 
