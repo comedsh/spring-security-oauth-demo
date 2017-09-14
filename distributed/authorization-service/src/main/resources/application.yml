@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: distributed-authorization-server
+management:
+  context_path: /admin
+security:
+  user:
+    password: password
+    roles: user
+  oauth2:
+    resource:
+      filter-order: 3
+server:
+  port: 9999
+  context-path: /uaa      
+logging:
+  level:
+    org.springframework.security: DEBUG

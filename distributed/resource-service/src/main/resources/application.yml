@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: distributed-resource-server
+    
+management:
+  context_path: /admin
+  
+security:
+  oauth2:
+    client:
+      client-id: c1
+      client-secret: password  
+    resource:
+      filter-order: 3
+      token-info-uri: http://localhost:9999/uaa/oauth/check_token
+      
+server:
+  port: 8000
+  context-path: /res
+        
+logging:
+  level:
+    org.springframework.security: DEBUG
+    

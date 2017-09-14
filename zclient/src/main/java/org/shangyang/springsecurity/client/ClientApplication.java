@@ -95,7 +95,12 @@ public class ClientApplication {
     	
     	// 通过 Access Token 获取 Resource Server 上的被保护资源；
     	
-    	User user = TokenUtils.getForProtectedResource( accessToken, User.class, "http://localhost:9999/uaa/api/user/1000" );
+    	// 当 Authorization Server 和 Resource Server 同在一个应用服务器上的时候，使用 "http://localhost:9999/uaa/api/user/1000"
+    	// User user = TokenUtils.getForProtectedResource( accessToken, User.class, "http://localhost:9999/uaa/api/user/1000" ); 
+
+    	// 当 Authorization Server 和 Resource Server 分开后，使用下面的方式，	
+    	
+    	User user = TokenUtils.getForProtectedResource( accessToken, User.class, "http://localhost:8000/res/api/user/1000" );
     	
     	logger.debug("=========> protected user retrieved: " + user.toString() );
     	
